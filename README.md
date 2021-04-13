@@ -24,6 +24,8 @@ upbit-api를 통해서 원하는 코인의 'opening_price', 'high_price', 'low_p
 $ pip install -r requirements.txt
 ```
 
+------------
+## Directory
 필수 디렉토리는 다음과 같습니다:
 ```
 .
@@ -53,6 +55,8 @@ $ pip install -r requirements.txt
 폴카닷
 ```
 
+------------
+## Run
 다음과 같이 프로그램을 실행 합니다
 ```
 $ python upbit_main.py
@@ -64,15 +68,19 @@ $ python upbit_main.py
 3. checkpoint (./checkpoint/**coin name**.ckpt)
 4. result (./**coin name**_pred.png)
 
-
+------------
 **1. coin stock data**
+
 ![data](./img/data.png)
 
 **2. loss**
+
 ![loss](./img/loss.png)
 
 **4. result**
+
 ![result](./img/result.png)
+
 
 ## upbit_market
 ### 성능
