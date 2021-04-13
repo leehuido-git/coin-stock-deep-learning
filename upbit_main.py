@@ -3,8 +3,6 @@ upbit_main.py
 #추출한 데이터를 통해 LSTM 학습
 #data 폴더안에 있는 모든 csv 학습
 Author: Huido Lee (j3jjj2021@naver.com)
-
-Usage: python detector.py <input file>
 '''
 import os
 from upbit_market import get_coin_data

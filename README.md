@@ -63,6 +63,8 @@ $ python upbit_main.py
 2. loss: (./**coin name**.png)
 3. checkpoint (./checkpoint/**coin name**.ckpt)
 4. result (./**coin name**_pred.png)
+
+
 **1. coin stock data**
 ![data](./img/data.png)
 
@@ -71,3 +73,15 @@ $ python upbit_main.py
 
 **4. result**
 ![result](./img/result.png)
+
+## upbit_market
+### 성능
+[upbit-api](https://upbit.com/service_center/open_api_guide)를 가지고 200개의 데이터를 받는데 0.1005s가 걸리며 반복문을 통해서 전체 데이터를 받을 수 있습니다
+
+----
+KRW-coin의 종목을 korean, english를 dic형태로 반환합니다
+coin_list에는 korean KRW-coin을 리스트형태로 지정해주어야 합니다
+None인 경우 KRW-coin전체를 반환합니다
+```python
+upbit_market.Choose_coin(coin_list = None)
+```
