@@ -6,6 +6,7 @@ import json
 import re
 import time
 import os
+data = 40000
 
 def Choose_coin(coin_list = None):
     """
@@ -39,32 +40,44 @@ def get_url_ohlcv(interval):
     """
     if interval in ["day", "days"]:
         url = "https://api.upbit.com/v1/candles/days"
+        timestpe = 24 * 60
     elif interval in ["minute1", "minutes1"]:
         url = "https://api.upbit.com/v1/candles/minutes/1"
+        timestpe = 1
     elif interval in ["minute3", "minutes3"]:
         url = "https://api.upbit.com/v1/candles/minutes/3"
+        timestpe = 3
     elif interval in ["minute5", "minutes5"]:
         url = "https://api.upbit.com/v1/candles/minutes/5"
+        timestpe = 5
     elif interval in ["minute10", "minutes10"]:
         url = "https://api.upbit.com/v1/candles/minutes/10"
+        timestpe = 10
     elif interval in ["minute15", "minutes15"]:
         url = "https://api.upbit.com/v1/candles/minutes/15"
+        timestpe = 15
     elif interval in ["minute30", "minutes30"]:
         url = "https://api.upbit.com/v1/candles/minutes/30"
+        timestpe = 30
     elif interval in ["minute60", "minutes60"]:
         url = "https://api.upbit.com/v1/candles/minutes/60"
+        timestpe = 60
     elif interval in ["minute240", "minutes240"]:
         url = "https://api.upbit.com/v1/candles/minutes/240"
+        timestpe = 240
     elif interval in ["week",  "weeks"]:
         url = "https://api.upbit.com/v1/candles/weeks"
+        timestpe = 24 * 60 * 7
     elif interval in ["month", "months"]:
         url = "https://api.upbit.com/v1/candles/months"
+        timestpe = 24 * 60 * 7 * 30
     else:
         url = "https://api.upbit.com/v1/candles/days"
-    return url
+        timestpe = 24 * 60
+    return url, timestpe
 
 
-def get_coin_data(local_path = None, coin_list = None):
+def get_coin_data(local_path = None, step = None, coin_list = None):
     """
     coin_list에 대해 전체 데이터 1day간격 데이터를 추출
     local_path의 data폴더에 저장
@@ -74,14 +87,15 @@ def get_coin_data(local_path = None, coin_list = None):
     for market in KRW_coin_dic.keys():
         df = pd.DataFrame()
         date_now =  datetime.datetime.now()
-        for i in range(0, 40001, count):
-            date = (date_now - datetime.timedelta(hours= i * 24 + 9*60)).strftime('%Y-%m-%d %H:%M:%S')
+        for i in range(0, (data+1), count):
+            url, timestep = get_url_ohlcv(step)
+            date = (date_now - datetime.timedelta(minutes= i * timestep + 9 * 60)).strftime('%Y-%m-%d %H:%M:%S')
             querystring = {"market":market, "to":date, "count":str(count)} #UTC
-            response = requests.request("GET", get_url_ohlcv("days"), params=querystring)
+            response = requests.request("GET", url, params=querystring)
             contents = response.json()
             dt_list = [datetime.datetime.strptime(x['candle_date_time_kst'], "%Y-%m-%dT%H:%M:%S") for x in contents]
             df = pd.concat([df, pd.DataFrame(contents, columns=['opening_price', 'high_price', 'low_price', 'trade_price', 'candle_acc_trade_volume'], index=dt_list)])
             time.sleep(0.1005)
-            print("load data: " + market + "  " + str(int(i/200)) + " / " + "200")            
+            print("load data: " + market + "  " + str(int(i/200)) + " / " + str(int(data/200)))            
             df[::-1].to_csv(os.path.join(local_path,'data',market + '.csv'), mode='w')
     return KRW_coin_dic
