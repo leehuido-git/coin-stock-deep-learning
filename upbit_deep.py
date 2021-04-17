@@ -13,7 +13,7 @@ from upbit_market import Choose_coin
 
 def coin_train(local_path = None, coin_list = None):
     # train Parameters
-    timesteps = 60
+    timesteps = 30
     training_data_rate = 0.7
     learning_rate = 0.001
     batch_size = 32
@@ -24,7 +24,9 @@ def coin_train(local_path = None, coin_list = None):
     for stock in KRW_coin_dic.keys():
         df_price = pd.read_csv(os.path.join(local_path, 'data', stock + ".csv"), encoding = 'utf8')
         scaler = MinMaxScaler()
-        scale_cols = ['opening_price', 'high_price', 'low_price', 'trade_price', 'candle_acc_trade_volume']
+        scale_cols = df_price.columns[1:].tolist()
+#        scale_cols = ['opening_price', 'high_price', 'low_price', 'trade_price', 'candle_acc_trade_volume']
+        df_price[scale_cols] = df_price[scale_cols].fillna(0)
         scaled = scaler.fit_transform(df_price[scale_cols])
 
         train_data = scaled[:int(len(scaled) * training_data_rate)]
@@ -46,25 +48,16 @@ def coin_train(local_path = None, coin_list = None):
         print("data split done")
 
         model = Sequential()
-        model.add(LSTM(units=50, activation="relu", return_sequences="True", input_shape=(X_train.shape[1], X_train.shape[2])))
-        model.add(Dropout(0.2))
-
-        model.add(LSTM(units=60, activation="relu", return_sequences=True))
-        model.add(Dropout(0.3))
-
-        model.add(LSTM(units=80, activation="relu", return_sequences=True))
-        model.add(Dropout(0.4))
-
-        model.add(LSTM(units=120, activation="relu"))
-        model.add(Dropout(0.5))
-
+        model.add(LSTM(units=50, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
+        model.add(LSTM(units=50, return_sequences=False))
+        model.add(Dense(units=25))
         model.add(Dense(units=1))
 #        tf.keras.utils.plot_model(model, to_file=os.path.join(local_path, "model.png"), show_shapes=True, show_layer_names=True)
 
         model.compile(optimizer=Adam(learning_rate= learning_rate), loss='mean_squared_error')
 
         # earlystopping은 2번 epoch통안 val_loss 개선이 없다면 학습을 멈춥니다.
-        earlystopping = EarlyStopping(monitor='val_loss', patience=2)
+        earlystopping = EarlyStopping(monitor='val_loss', patience = 3)
         # val_loss 기준 체크포인터도 생성합니다.
         filename = os.path.join(local_path, 'checkpoint', stock + '.ckpt')
         checkpoint = ModelCheckpoint(filename, 

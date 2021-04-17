@@ -84,7 +84,8 @@ $ python upbit_main.py
 
 ## upbit_market
 ### 성능
-[upbit-api](https://upbit.com/service_center/open_api_guide)를 가지고 200개의 데이터를 받는데 0.1005s가 걸리며 반복문을 통해서 40200개의 데이터를 받을 수 있으며, upnit_market.py의 data전역변수를 통해서 데이터를 조절할 수 있습니다.
+[upbit-api](https://upbit.com/service_center/open_api_guide)를 가지고 200개의 데이터를 한번 받는데 0.1005s가 걸리며 반복문을 통해서 200, 100, 10, 1개순으로 데이터를 받으며 원하는 날짜를 입력하면 그 날부터 데이터를 받습니다.
+1일단위는 ["opening_price", "high_price", "low_price", "trade_price", "candle_acc_trade_price", "candle_acc_trade_volume", "prev_closing_price", "change_price", "change_rate"]이며, 그 외에는 ["opening_price", "high_price", "low_price", "trade_price", "candle_acc_trade_price", "candle_acc_trade_volume"]를 받습니다. 자세한 내용은 [upbit-api-docs]](https://docs.upbit.com/reference#%EC%8B%9C%EC%84%B8-%EC%BA%94%EB%93%A4-%EC%A1%B0%ED%9A%8C)를 확인해주세요.
 
 ----
 KRW-coin의 종목을 korean, english를 dic형태로 반환합니다.

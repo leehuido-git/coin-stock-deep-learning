@@ -5,9 +5,14 @@ upbit_main.py
 Author: Huido Lee (j3jjj2021@naver.com)
 '''
 import os
+import tensorflow as tf
 from upbit_market import get_coin_data
 from upbit_deep import coin_train
 from upbit_deep_test import coin_predict
+tf.keras.backend.clear_session()
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+config = tf.compat.v1.ConfigProto()
+config.gpu_options.allow_growth = True
 
 if __name__ == '__main__':
     local_path = os.getcwd()
@@ -22,6 +27,6 @@ if __name__ == '__main__':
             coin_list.append(coin)
     f.close()
 
-    get_coin_data(local_path = local_path, step = 'days', coin_list = coin_list)    
+    get_coin_data(local_path = local_path, start_day="20170901", step = 'days', coin_list = coin_list)
     coin_train(local_path = local_path, coin_list = coin_list)
     coin_predict(local_path= local_path, coin_list = coin_list)
