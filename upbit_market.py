@@ -108,8 +108,8 @@ def get_coin_data(local_path = None, start_day = None, step = None, coin_list = 
     time_diff = int(((datetime.datetime.now() - start_day).total_seconds() / 60.0) /timestep)
 
     KRW_coin_dic = Choose_coin(coin_list = coin_list)
-    count = [0, 0, 0]
     for market in KRW_coin_dic.keys():
+        count = [0, 0, 0]
         df = pd.DataFrame()
         date_now =  datetime.datetime.now()
         for i in range(0, (time_diff - 200), 200):

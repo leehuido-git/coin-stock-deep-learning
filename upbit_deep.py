@@ -13,7 +13,7 @@ from upbit_market import Choose_coin
 
 def coin_train(local_path = None, coin_list = None):
     # train Parameters
-    timesteps = 30
+    timesteps = 60
     training_data_rate = 0.7
     learning_rate = 0.001
     batch_size = 32
@@ -46,12 +46,20 @@ def coin_train(local_path = None, coin_list = None):
             Y_test.append(test_data[i+timesteps, scale_cols.index('trade_price')])
         X_test, Y_test = np.array(X_test), np.array(Y_test)
         print("data split done")
-
+        
+        """
         model = Sequential()
         model.add(LSTM(units=50, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
         model.add(LSTM(units=50, return_sequences=False))
         model.add(Dense(units=25))
         model.add(Dense(units=1))
+        """
+        model = Sequential()
+        model.add(LSTM(units=256, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
+        model.add(LSTM(units=256, return_sequences=False))
+        model.add(Dense(units=25))
+        model.add(Dense(units=1))
+
 #        tf.keras.utils.plot_model(model, to_file=os.path.join(local_path, "model.png"), show_shapes=True, show_layer_names=True)
 
         model.compile(optimizer=Adam(learning_rate= learning_rate), loss='mean_squared_error')
@@ -80,4 +88,4 @@ def coin_train(local_path = None, coin_list = None):
         loss_ax.set_xlabel('epoch')
         loss_ax.set_ylabel('loss')
         loss_ax.legend(loc='upper left')
-        plt.savefig(os.path.join(local_path, stock +  "_loss.png"))
+        plt.savefig(os.path.join(local_path,"loss",  stock +  "_loss.png"))
